@@ -81,7 +81,7 @@ export default function Navbar() {
                   {t[language].callUs}
                 </span>
                 <a
-                  href="tel:+998999720515"
+                  href="tel:+99873.200-13-13"
                   className="text-black hover:text-green-700 text-1xl font-medium hover:underline"
                 >
                   +99873.200-13-13

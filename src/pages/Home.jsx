@@ -69,7 +69,9 @@ function Home() {
       <div className="universe flex items-center justify-center px-10 py-10">
         <h1>{t[language].name}</h1>
       </div>
-      <div className=" flex justify-center items-center"></div>
+      <div className=" flex justify-center items-center">
+        <img src="" alt="" />
+      </div>
     </>
   );
 }
