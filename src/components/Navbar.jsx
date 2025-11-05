@@ -1,174 +1,180 @@
-import { useState, useEffect } from "react";
-import { Phone, Clock, Menu, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "./LanguageContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isSticky, setIsSticky] = useState(false); // <-- navni yopishtirish holati
+  const [isSticky, setIsSticky] = useState(false);
   const { language, toggleLanguage } = useLanguage();
+  const mobileMenuRef = useRef(null);
 
   const t = {
     uz: {
       home: "Asosiy",
       about: "Biz haqimizda",
       services: "Xizmatlar",
-      gallery: "Galereya",
       news: "Yangiliklar",
-      reviews: "Sharhlar",
       contact: "Aloqa",
-      order: "Buyurtma berish",
-      workTime: "Ish vaqti:",
-      callUs: "Biz bilan aloqa:",
-      switch: "Русский",
+      switch: "uz",
     },
     ru: {
       home: "Главная",
       about: "О нас",
       services: "Услуги",
-      gallery: "Галерея",
       news: "Новости",
-      reviews: "Отзывы",
       contact: "Контакты",
-      order: "Заказать",
-      workTime: "Время работы:",
-      callUs: "Связаться с нами:",
-      switch: "O‘zbekcha",
+      switch: "ru",
     },
   };
 
-  // scroll hodisasi orqali navni yopishtirish
+  // scroll orqali nav fonini va shadow effektini o'zgartirish
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 150) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
+    const handleScroll = () => setIsSticky(window.scrollY > 100);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Mobil menyu ochilganda body scrollni bloklash
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+  }, [isOpen]);
+
+  // Ekranga bosilganda mobil menyuni yopish
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
   return (
-    <header className="border-b bg-white shadow-sm">
-      {/* Yuqori qism */}
-      <div className="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto py-3 px-4 text-sm text-gray-600">
-        <div className="flex items-center gap-2 font-semibold">
-          <img
-            src="/logo.png"
-            alt="Zilol logo"
-            className="w-80 h-30 object-cover"
-          />
-        </div>
+    <header
+      className={`w-full top-0 z-50 transition-all duration-300 ${
+        isSticky ? "bg-white/95 shadow-lg backdrop-blur-md" : "bg-white"
+      }`}
+    >
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
+        <img src="./logo.png" alt="" className="hidden md:block w-60 h-20" />
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-10 mt-3 sm:mt-0">
-          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
-            <div className="flex items-center gap-2">
-              <Clock className="w-10 h-10 text-black" />
-              <div className="flex flex-col text-center sm:text-left">
-                <span className="font-semibold text-1.5xl">
-                  {t[language].workTime}
-                </span>
-                <span className="text-black">08:00–20:00 Du–Ya</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Phone className="w-10 h-10 text-black" />
-              <p className="flex flex-col text-center sm:text-left">
-                <span className="font-semibold text-1xl">
-                  {t[language].callUs}
-                </span>
-                <a
-                  href="tel:+99873.200-13-13"
-                  className="text-black hover:text-green-700 text-1xl font-medium hover:underline"
-                >
-                  +99873.200-13-13
-                </a>
-              </p>
-            </div>
-          </div>
-
-          {/* Buyurtma tugmasi */}
-          <button className="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md font-semibold transition sm:ml-auto">
-            {t[language].order}
-          </button>
-        </div>
-      </div>
-
-      {/* Navigatsiya (desktop) */}
-      <nav
-        className={`hidden md:flex justify-center w-full bg-white/90 backdrop-blur-md transition-all duration-300 ${
-          isSticky
-            ? "fixed top-0 left-0 shadow-md z-50 animate-slideDown"
-            : "relative shadow-none"
-        }`}
-      >
-        <ul className="flex flex-wrap items-center gap-8 py-4 text-sm font-medium text-gray-700 uppercase tracking-wide">
-          <Link className="text-purple-700 font-semibold cursor-pointer">
-            {t[language].home}
-          </Link>
-          <Link className="cursor-pointer hover:text-purple-700">
-            {t[language].about}
-          </Link>
-          <Link className="cursor-pointer hover:text-purple-700">
-            {t[language].services}
-          </Link>
-          <Link className="cursor-pointer hover:text-purple-700">
-            {t[language].gallery}
-          </Link>
-          <Link className="cursor-pointer hover:text-purple-700">
-            {t[language].news}
-          </Link>
-          <Link className="cursor-pointer hover:text-purple-700">
-            {t[language].reviews}
-          </Link>
-          <Link className="cursor-pointer hover:text-purple-700">
-            {t[language].contact}
-          </Link>
-
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium uppercase tracking-wide">
+          {[
+            { to: "/", label: t[language].home },
+            { to: "/about", label: t[language].about },
+            { to: "/services", label: t[language].services },
+            { to: "/news", label: t[language].news },
+            { to: "/contact", label: t[language].contact },
+          ].map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="hover:text-purple-700 transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
           <button
             onClick={toggleLanguage}
-            className="cursor-pointer hover:text-purple-700 font-semibold flex gap-1 items-center"
+            className="flex items-center gap-2 hover:text-purple-700 font-semibold"
           >
             <img
-              src={language === "uz" ? "/ru.png" : "/uzb.png"}
-              alt={language === "uz" ? "RU" : "UZ"}
-              className="w-5 h-5 object-cover"
+              src={language === "uz" ? "/uzb.png" : "/ru.png"}
+              alt={language === "uz" ? "UZ" : "RU"}
+              className="w-5 h-5"
             />
             {t[language].switch}
           </button>
-        </ul>
-      </nav>
+        </nav>
 
-      {/* Mobil menyu tugmasi */}
-      <div className="md:hidden flex justify-end px-4 py-2">
-        <button className="text-gray-700" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
-      </div>
-
-      <div
-        className={`md:hidden bg-white border-t transition-all duration-500 overflow-hidden ${
-          isOpen ? "max-h-96" : "max-h-0"
-        }`}
-      >
-        <ul className="flex flex-col items-center py-3 space-y-3 text-gray-700 uppercase font-medium text-sm">
-          <Link onClick={() => setIsOpen(false)}>{t[language].home}</Link>
-          <Link onClick={() => setIsOpen(false)}>{t[language].about}</Link>
-          <Link onClick={() => setIsOpen(false)}>{t[language].services}</Link>
-          <Link onClick={() => setIsOpen(false)}>{t[language].gallery}</Link>
-          <Link onClick={() => setIsOpen(false)}>{t[language].news}</Link>
-          <Link onClick={() => setIsOpen(false)}>{t[language].reviews}</Link>
-          <Link onClick={() => setIsOpen(false)}>{t[language].contact}</Link>
-
+        {/* Mobile Menu Icon */}
+        <div className="flex gap-1">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-black t hover:bg-blue-600 hover:text-white"
+          >
+            {isOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
           <button
             onClick={() => {
               toggleLanguage();
               setIsOpen(false);
             }}
-            className="flex items-center gap-2 hover:text-purple-700"
+            className="relative block md:hidden px-3 py-1 font-semibold text-white uppercase 
+             rounded-3xl hover:bg-gradient-to-r from-indigo-500 via-sky-500 to-purple-500 
+             shadow-md transition-all duration-500 overflow-hidden
+             hover:scale-105 hover:shadow-xl"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-white/20 opacity-0 hover:opacity-100 transition-opacity duration-700"></span>
+            <span className="relative z-10 tracking-wide text-sm text-black  hover:text-white">
+              {t[language].switch}
+            </span>
+          </button>
+        </div>
+
+        <img
+          src="./logo.png"
+          alt="ZILOL logo"
+          className="
+    block md:hidden             
+    w-30 h-auto                
+    max-w-[180px]               
+    md:max-w-[220px]           
+    object-contain            
+    mx-auto my-2             
+    touch-none                   
+  "
+          loading="lazy"
+        />
+      </div>
+      {/* Mobile Menu */}
+      <div
+        ref={mobileMenuRef}
+        className={`fixed top-0 left-0 h-full w-64 bg-amber-50 shadow-lg z-50 transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        style={{
+          backgroundImage: `url('/bg-mobil2.jpg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <ul className="flex flex-col items-start mt-50 py-10 px-5 space-y-6 text-gray-700 uppercase font-medium">
+          {[
+            { to: "/", label: t[language].home },
+            { to: "/about", label: t[language].about },
+            { to: "/services", label: t[language].services },
+            { to: "/news", label: t[language].news },
+            { to: "/contact", label: t[language].contact },
+          ].map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={() => setIsOpen(false)}
+              className="hover:text-purple-700 transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
+
+          {/* <button
+            onClick={() => {
+              toggleLanguage();
+              setIsOpen(false);
+            }}
+            className="flex items-center gap-2 hover:text-purple-700 font-semibold mt-4"
           >
             <img
               src={language === "uz" ? "/ru.png" : "/uzb.png"}
@@ -176,7 +182,7 @@ export default function Navbar() {
               className="w-5 h-5"
             />
             {t[language].switch}
-          </button>
+          </button> */}
         </ul>
       </div>
     </header>
