@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "../components/LanguageContext";
 import CarpetComparison from "../components/CarpetComparison";
 import PhoneInput from "../components/PhoneInput";
-import Services from "../components/services";
+import Services from "../components/Services";
 
 // Error alert sake
 function ErrorAlert({ message, onClose }) {
@@ -39,7 +39,7 @@ function Home({ text = "ZILOL" }) {
   const { language } = useLanguage();
   const [formData, setFormData] = useState({ name: "", phone: "" });
   const [errors, setErrors] = useState({});
-  const [isSubmifksdlfk, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentError, setCurrentError] = useState("");
   const [preview, setPreview] = useState({ name: "", phone: "" });
   const [showDiscountModal, setShowDiscountModal] = useState(false); // modal uchun
@@ -94,7 +94,7 @@ function Home({ text = "ZILOL" }) {
     //     },
   };
 
-  const currentT = t[language] || t.default;
+  const currentT = t[language] || t.uz;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
