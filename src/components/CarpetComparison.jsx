@@ -1,11 +1,40 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FcInTransit } from "react-icons/fc";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
+import { useLanguage } from "./LanguageContext";
 
 export default function CarpetComparison() {
   const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [pos, setPos] = useState(50);
+  const { language, toggleLanguage } = useLanguage();
+
+  const t = {
+    uz: {
+      cleaning: " Gilamlarni yuvish",
+      rug: "vaqti keldi!",
+      res: "  Gilam, mebel, matras va boshqa sirtlarni yuvish Xizmatlardan",
+      cik: " CHEGIRMA",
+      rbe: "bilan foydalaning! Tozalik — sizning farovonligingiz!",
+      ber: "  bepul yetkazib berish",
+      yer: " Shahar ichida",
+      eko: "Ekologik toza yuvish vositalari bilan",
+      yuv: "yuvish",
+      bts: "Batafsil ma'lumot",
+    },
+    ru: {
+      cleaning: " Стирка ковров",
+      rug: "Пришло время!",
+      res: "Услуги по чистке ковров, мебели, матрасов и других поверхностей",
+      cik: "СКИДКА",
+      rbe: "Используйте нас! Чистота — это ваше благополучие!",
+      ber: "Бесплатная доставка",
+      yer: "По городу",
+      eko: "С использованием экологически чистых моющих средств",
+      yuv: "Стирка",
+      bts: "Узнать больше",
+    },
+  };
 
   // Drag / touch events
   useEffect(() => {
@@ -42,22 +71,24 @@ export default function CarpetComparison() {
   const moveRight = () => setPos((p) => Math.min(100, p + 10));
 
   return (
-    <section className="relative max-w-7xl mx-auto px-6 py-24 bg-gradient-to-br from-emerald-600 via-indigo-700 to-purple-700 rounded-3xl shadow-2xl overflow-hidden">
+    <section className="relative  mx-auto px-6 py-24 bg-gradient-to-br from-emerald-600 via-indigo-700 to-purple-700 rounded-3xl shadow-2xl overflow-hidden">
       {/* Dekorativ fon effekt */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.1),_transparent_60%)]"></div>
+      <div className="absolute inset-0 "></div>
 
       <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* LEFT: Text */}
         <div className="lg:pr-12 text-white">
           <h3 className="text-3xl lg:text-5xl font-extrabold leading-tight mb-6 drop-shadow-md">
-            Gilamlarni yuvish <br className="hidden md:block" /> vaqti keldi!
+            {t[language].cleaning}
+            <br className="hidden md:block" /> {t[language].rug}
           </h3>
 
           <p className="text-lg text-gray-100 mb-10 leading-relaxed">
-            Gilam, pol qoplamasi, matras va boshqa sirtlarni tozalash
-            xizmatlarimizdan{" "}
-            <strong className="text-yellow-300 font-semibold">CHEGIRMA</strong>{" "}
-            bilan foydalaning! Tozalik — sizning farovonligingiz!
+            {t[language].res}
+            <strong className="text-yellow-300 font-semibold">
+              {t[language].cik}
+            </strong>
+            {t[language].rbe}
           </p>
 
           {/* Xizmat afzalliklari */}
@@ -67,9 +98,9 @@ export default function CarpetComparison() {
                 <FcInTransit className="w-16 h-16" />
               </div>
               <div className="text-lg font-medium text-gray-50 leading-snug">
-                Shahar ichida{" "}
+                {t[language].yer}
                 <span className="text-yellow-300 font-semibold">
-                  bepul yetkazib berish
+                  {t[language].ber}
                 </span>
               </div>
             </div>
@@ -79,15 +110,15 @@ export default function CarpetComparison() {
                 <CgSmartHomeWashMachine className="w-16 h-16 text-white" />
               </div>
               <div className="text-lg font-medium text-gray-50 leading-snug">
-                Ekologik toza yuvish vositalari bilan{" "}
-                <span className="text-yellow-300">yuvish</span>
+                {t[language].eko}
+                <span className="text-yellow-300">{t[language].yuv}</span>
               </div>
             </div>
           </div>
 
           {/* Tugma */}
           <button className="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 font-semibold px-8 py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-yellow-500/40">
-            Ko‘proq o‘qish
+            {t[language].bts}
           </button>
         </div>
 

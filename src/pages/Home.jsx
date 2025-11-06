@@ -1,24 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "../components/LanguageContext";
 import CarpetComparison from "../components/CarpetComparison";
 import PhoneInput from "../components/PhoneInput";
+import Services from "../components/services";
+import { Form } from "react-router-dom";
 
-function Home() {
+// Error alert sake
+function ErrorAlert({ message, onClose }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (message) {
+      setVisible(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [message]);
+
+  const handleClose = () => {
+    setVisible(false);
+    if (onClose) onClose();
+  };
+
+  if (!visible || !message) return null;
+
+  return (
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center justify-between w-[90%] max-w-md z-50">
+      <span>{message}</span>
+      <button
+        onClick={handleClose}
+        className="ml-4 font-bold text-white hover:text-gray-200"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
+function Home({ text = "ZILOL" }) {
   const { language } = useLanguage();
   const [formData, setFormData] = useState({ name: "", phone: "" });
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmifksdlfk, setIsSubmitting] = useState(false);
+  const [currentError, setCurrentError] = useState("");
+  const [preview, setPreview] = useState({ name: "", phone: "" });
+  const [showDiscountModal, setShowDiscountModal] = useState(false); // modal uchun
+  const colors = [
+    "text-red-500",
+    "text-orange-500",
+    "text-yellow-500",
+    "text-green-500",
+    "text-blue-500",
+    "text-indigo-500",
+    "text-purple-500",
+    "text-pink-500",
+  ];
+
+  // 3 soniyadan keyin modal chiqsin
+  useEffect(() => {
+    const timer = setTimeout(() => setShowDiscountModal(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const t = {
     uz: {
       dec: "Ismingiz va telefon raqamingizni kiritib, bizga jo'nating. Tez orada sizga qo'ng'iroq qilamiz:",
       titl: "Jo'natish",
-      name: "Bizda eng arzon narxlar mavjud",
+      name: "Profissanal Xizmat",
       privacy: "Biz ma'lumotlaringizni maxfiy saqlaymiz.",
       placeholderName: "Ismingizni kiriting",
       submitSuccess:
         "Muvaffaqiyatli yuborildi! Tez orada sizga qo'ng'iroq qilamiz.",
       submitError: "Xatolik yuz berdi. Qayta urinib ko'ring.",
+      gil: "1000.000 Ming  Ko'proq Hursand mijozlar",
     },
     ru: {
       dec: "Введите имя и номер телефона, отправьте нам. Мы Вам перезвоним в ближайшее время:",
@@ -28,16 +81,18 @@ function Home() {
       placeholderName: "Введите ваше имя",
       submitSuccess: "Успешно отправлено! Мы перезвоним вам скоро.",
       submitError: "Произошла ошибка. Попробуйте снова.",
+      gil: "Мы приводим ваши ковры в состояние как новые — с качеством, доверием и чистотой.",
     },
-    default: {
-      dec: "Enter your name and phone number and send it to us. We'll call you soon:",
-      titl: "Submit",
-      name: "We have the best prices",
-      privacy: "We keep your data confidential.",
-      placeholderName: "Enter your name",
-      submitSuccess: "Submitted successfully! We'll call you soon.",
-      submitError: "An error occurred. Please try again.",
-    },
+    //     default: {
+    //     dec: "Ismingiz va telefon raqamingizni kiriting va bizga yuboring. Tez orada sizga qo‘ng‘iroq qilamiz:",
+    // titl: "Yuborish",
+    // name: "Bizda eng arzon narxlar mavjud",
+    // privacy: "Ma’lumotlaringiz maxfiy saqlanadi.",
+    // placeholderName: "Ismingizni kiriting",
+    // submitSuccess: "Muvaffaqiyatli yuborildi! Tez orada sizga qo‘ng‘iroq qilamiz.",
+    // submitError: "Xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.",
+
+    //     },
   };
 
   const currentT = t[language] || t.default;
@@ -45,11 +100,13 @@ function Home() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setPreview((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handlePhoneChange = (value) => {
     setFormData((prev) => ({ ...prev, phone: value }));
+    setPreview((prev) => ({ ...prev, phone: value }));
     if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
   };
 
@@ -66,6 +123,7 @@ function Home() {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setCurrentError(Object.values(validationErrors)[0]);
       return;
     }
 
@@ -75,61 +133,87 @@ function Home() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       alert(currentT.submitSuccess);
       setFormData({ name: "", phone: "" });
+      setPreview({ name: "", phone: "" });
     } catch (err) {
-      alert(currentT.submitError);
+      setCurrentError(currentT.submitError);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // errors update bo‘lganda popup ko‘rsatish
+  useEffect(() => {
+    const firstError = Object.values(errors).find((err) => err);
+    if (firstError) setCurrentError(firstError);
+  }, [errors]);
+
   return (
     <>
+      {/* Popup */}
+      <ErrorAlert message={currentError} onClose={() => setCurrentError("")} />
+
+      {/* Chegirma Modal */}
+      {showDiscountModal && (
+        <div className="fixed  inset-0 bg-black/60 flex justify-center items-center z-50">
+          <form className="relative  bg-white rounded-2xl p-6 w-70 shadow-2xl text-center animate-fadeIn">
+            <button
+              onClick={() => setShowDiscountModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-700 text-xl"
+            >
+              ✕
+            </button>
+            <h1 className="text-3xl font-bold">
+              {text.split("").map((char, index) => (
+                <span key={index} className={colors[index % colors.length]}>
+                  {char}
+                </span>
+              ))}
+            </h1>
+            <h2 className="text-2xl font-bold text-blue-800 mb-6">
+              Birinchi buyurtma uchun chegirma
+            </h2>
+
+            <input
+              type="text"
+              placeholder="Ismingiz"
+              className="w-full mb-4 px-4 py-3 rounded-full bg-blue-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+
+            <PhoneInput
+              value={formData.phone}
+              onChange={handlePhoneChange}
+              error={errors.phone}
+              className="w-full mb-6 px-4 py-3 rounded-full bg-blue-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+
+            <button className="w-full bg-blue-600 text-white font-semibold py-3 rounded-full hover:bg-amber-400 transition">
+              Yuborish
+            </button>
+
+            <p className="text-gray-500 text-sm mt-3">
+              "Yuborish" tugmasini bosish orqali veb-sayt shartlariga rozilik
+              bildirasiz
+            </p>
+          </form>
+        </div>
+      )}
+
       {/* Hero / Form Section */}
       <section
         className="relative min-h-screen flex flex-col justify-center items-center px-6 py-20 text-white overflow-hidden"
         style={{
           backgroundImage: `
-      linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-      url('/bg-img.webp')
-    `,
+            linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+            url('/bg-img.webp')
+          `,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <form
+        {/* <form
           onSubmit={handleSubmit}
           className="relative w-full max-w-3xl mx-auto bg-white/95 backdrop-blur-md p-8 md:p-10 rounded-2xl shadow-2xl border border-gray-100 space-y-6 "
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="name" className="sr-only">
-                {currentT.placeholderName}
-              </label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder={currentT.placeholderName}
-                className={`w-full rounded-lg border px-5 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
-            </div>
-            <div>
-              <PhoneInput
-                value={formData.phone}
-                onChange={handlePhoneChange}
-                error={errors.phone}
-                placeholder="+998 90 123 45 67"
-              />
-            </div>
-          </div>
-
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-5">
             <button
               type="submit"
@@ -142,35 +226,40 @@ function Home() {
               {currentT.privacy}
             </p>
           </div>
-        </form>
+
+      
+          <div className="mt-6 bg-gray-50 p-4 rounded-lg shadow-inner text-gray-800">
+            <h3 className="font-semibold mb-2">Preview:</h3>
+            <p>
+              <span className="font-semibold">Name:</span> {preview.name || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Phone:</span>{" "}
+              {preview.phone || "-"}
+            </p>
+          </div>
+        </form> */}
       </section>
 
       {/* Discount / Info Section */}
       <section className="relative flex flex-col items-center justify-center py-28 px-6 text-center overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-indigo-50">
-        {/* Orqa fon bezagi */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(79,70,229,0.08),_transparent_60%)]"></div>
-
-        {/* Sarlavha */}
         <h1 className="relative text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-indigo-600 to-purple-600 drop-shadow-sm mb-6">
           {currentT.name}
         </h1>
-
-        {/* Gradient chiziq */}
         <div className="relative w-32 h-1.5 rounded-full bg-gradient-to-r from-emerald-400 via-indigo-500 to-purple-500 shadow-md mb-4 animate-pulse"></div>
-
-        {/* Qo'shimcha matn (ixtiyoriy) */}
         <p className="relative text-gray-600 max-w-2xl leading-relaxed mt-4 text-lg">
-          Biz gilamlaringizni yangiday holatga keltiramiz — sifat, ishonch va
-          tiniqlik bilan.
+          {currentT.gil}
         </p>
       </section>
 
-      {/* Carpet Comparison Section */}
       <section className="relative bg-gradient-to-b from-gray-50 via-white to-gray-100 py-28 px-1 overflow-hidden">
-        {/* Orqa fon effekt (shaffof rang to‘lqinlar) */}
-        <div className="absolute inset-0 opacity-20 bg-[conic-gradient(from_120deg_at_50%_50%,_rgba(99,102,241,0.15),_rgba(16,185,129,0.15),_transparent_70%)] animate-spin-slow"></div>
+        <div className="absolute inset-0 opacity-20 animate-spin-slow"></div>
         <CarpetComparison />
-        <div></div>
+      </section>
+
+      <section>
+        <Services />
       </section>
     </>
   );
