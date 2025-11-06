@@ -3,7 +3,6 @@ import { useLanguage } from "../components/LanguageContext";
 import CarpetComparison from "../components/CarpetComparison";
 import PhoneInput from "../components/PhoneInput";
 import Services from "../components/services";
-import { Form } from "react-router-dom";
 
 // Error alert sake
 function ErrorAlert({ message, onClose }) {
