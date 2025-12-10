@@ -1,5 +1,5 @@
 import EmailForm from "./EmailForm";
-import Services from "./services";
+import Services from "../components/Services";
 
 function Footer() {
   return (
