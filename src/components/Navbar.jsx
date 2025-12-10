@@ -6,17 +6,18 @@ import { useLanguage } from "./LanguageContext";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-  const { language, toggleLanguage } = useLanguage();
   const mobileMenuRef = useRef(null);
+  const { language, toggleLanguage } = useLanguage();
 
-  const t = {
+  // Tarjimalar
+  const translations = {
     uz: {
       home: "Asosiy",
       about: "Biz haqimizda",
       services: "Xizmatlar",
       news: "Yangiliklar",
       contact: "Aloqa",
-      switch: "uz",
+      switch: "UZ",
     },
     ru: {
       home: "Главная",
@@ -24,11 +25,14 @@ export default function Navbar() {
       services: "Услуги",
       news: "Новости",
       contact: "Контакты",
-      switch: "ru",
+      switch: "RU",
     },
   };
 
-  // scroll orqali nav fonini va shadow effektini o'zgartirish
+  // Fallback bilan tanlangan tilni olish
+  const t = translations[language] || translations["uz"];
+
+  // Scroll orqali nav fonini va shadow effektini o‘zgartirish
   useEffect(() => {
     const handleScroll = () => setIsSticky(window.scrollY > 100);
     window.addEventListener("scroll", handleScroll);
@@ -62,21 +66,28 @@ export default function Navbar() {
 
   return (
     <header
-      className={`w-full top-0 z-50 transition-all duration-300 ${
+      className={`w-full fixed top-0 z-50 transition-all duration-300 ${
         isSticky ? "bg-white/95 shadow-lg backdrop-blur-md" : "bg-white"
       }`}
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
-        <img src="./logo.png" alt="" className="hidden md:block w-60 h-20" />
+        {/* Logo */}
+        <Link to="/">
+          <img
+            src="./logo.png"
+            alt="Logo"
+            className="    hidden md:block w-24 h-12  sm:w-10 sm:h-2 md:w-40 md:h-20  lg:w-47 lg:h-17  object-cover "
+          />
+        </Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium uppercase tracking-wide">
           {[
-            { to: "/", label: t[language].home },
-            { to: "/about", label: t[language].about },
-            { to: "/services", label: t[language].services },
-            { to: "/news", label: t[language].news },
-            { to: "/contact", label: t[language].contact },
+            { to: "/", label: t.home },
+            { to: "/about", label: t.about },
+            { to: "/services", label: t.services },
+            { to: "/news", label: t.news },
+            { to: "/contact", label: t.contact },
           ].map((item) => (
             <Link
               key={item.to}
@@ -86,63 +97,55 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
+
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-2 hover:text-purple-700 font-semibold"
+            className="flex items-center gap-2 font-semibold hover:text-purple-700 transition-all"
           >
             <img
               src={language === "uz" ? "/uzb.png" : "/ru.png"}
               alt={language === "uz" ? "UZ" : "RU"}
-              className="w-5 h-5"
+              className="w-5 h-5 transition-transform duration-300 hover:scale-110"
             />
-            {t[language].switch}
+            <span className="transition-opacity duration-300">{t.switch}</span>
           </button>
         </nav>
 
-        {/* Mobile Menu Icon */}
-        <div className="flex gap-1">
+        {/* Mobil menyu ikonkasi va til tugmasi */}
+        <div className="flex gap-2 md:hidden">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-black t hover:bg-blue-600 hover:text-white"
+            className="text-black hover:bg-purple-100 rounded-full p-2 transition"
           >
-            {isOpen ? <X size={18} /> : <Menu size={18} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
+
           <button
             onClick={() => {
               toggleLanguage();
               setIsOpen(false);
             }}
-            className="relative block md:hidden px-3 py-1 font-semibold text-white uppercase 
-             rounded-3xl hover:bg-gradient-to-r from-indigo-500 via-sky-500 to-purple-500 
-             shadow-md transition-all duration-500 overflow-hidden
-             hover:scale-105 hover:shadow-xl"
+            className="px-3 py-1 text-sm font-semibold text-black bg-transparent hover:bg-amber-400 rounded-3xl shadow-sm hover:scale-105 transition-transform duration-300"
           >
-            <span className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-white/20 opacity-0 hover:opacity-100 transition-opacity duration-700"></span>
-            <span className="relative z-10 tracking-wide text-sm text-black  hover:text-white">
-              {t[language].switch}
-            </span>
+            {t.switch}
           </button>
         </div>
 
-        <img
-          src="./logo.png"
-          alt="ZILOL logo"
-          className="
-    block md:hidden             
-    w-30 h-auto                
-    max-w-[180px]               
-    md:max-w-[220px]           
-    object-contain            
-    mx-auto my-2             
-    touch-none                   
-  "
-          loading="lazy"
-        />
+        {/* Mobil versiya uchun logo */}
+        <Link to="/">
+          <img
+            src="./logo.png"
+            alt="ZILOL logo"
+            className="block md:hidden w-32 h-auto object-contain mx-auto my-2"
+            loading="lazy"
+          />
+        </Link>
       </div>
+
       {/* Mobile Menu */}
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 left-0 h-full w-64 bg-amber-50 shadow-lg z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
@@ -151,38 +154,23 @@ export default function Navbar() {
           backgroundPosition: "center",
         }}
       >
-        <ul className="flex flex-col items-start mt-50 py-10 px-5 space-y-6 text-gray-700 uppercase font-medium">
+        <ul className="flex flex-col items-start mt-24 py-10 px-5 space-y-6 text-gray-700 uppercase font-medium">
           {[
-            { to: "/", label: t[language].home },
-            { to: "/about", label: t[language].about },
-            { to: "/services", label: t[language].services },
-            { to: "/news", label: t[language].news },
-            { to: "/contact", label: t[language].contact },
+            { to: "/", label: t.home },
+            { to: "/about", label: t.about },
+            { to: "/services", label: t.services },
+            { to: "/news", label: t.news },
+            { to: "/contact", label: t.contact },
           ].map((item) => (
             <Link
               key={item.to}
               to={item.to}
               onClick={() => setIsOpen(false)}
-              className="hover:text-purple-700 transition-colors"
+              className="hover:text-purple-700 transition-colors text-lg"
             >
               {item.label}
             </Link>
           ))}
-
-          {/* <button
-            onClick={() => {
-              toggleLanguage();
-              setIsOpen(false);
-            }}
-            className="flex items-center gap-2 hover:text-purple-700 font-semibold mt-4"
-          >
-            <img
-              src={language === "uz" ? "/ru.png" : "/uzb.png"}
-              alt={language === "uz" ? "RU" : "UZ"}
-              className="w-5 h-5"
-            />
-            {t[language].switch}
-          </button> */}
         </ul>
       </div>
     </header>
