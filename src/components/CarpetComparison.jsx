@@ -112,7 +112,7 @@ export default function CarpetComparison() {
           </button>
         </div>
 
-        {/* RIGHT SLIDER */}
+        
         <div
           ref={containerRef}
           onMouseDown={startDrag}

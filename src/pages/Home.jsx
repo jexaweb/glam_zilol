@@ -261,7 +261,7 @@ function Home() {
               className="
         absolute 
         bottom-10 sm:bottom-16 md:bottom-20 lg:bottom-2
-        left-4 sm:left-6 md:left-10 
+        left-4 sm:left-6  md:left-10 
         max-w-[92%] sm:max-w-[85%] md:max-w-3xl lg:max-w-4xl
         z-40
       "
@@ -269,7 +269,7 @@ function Home() {
               <h2
                 className="
           font-bold 
-          text-[14px] sm:text-lg md:text-2xl lg:text-4xl
+          text-[14px] sm:text-lg md:text-4xl lg:text-4xl
           leading-snug md:leading-normal
           px-3 py-3 sm:px-4 sm:py-4 md:px-5 md:py-6 
           bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400
