@@ -6,7 +6,7 @@ import { useLanguage } from "../components/LanguageContext";
 import EmailForm from "../components/EmailForm";
 import Footer from "../components/Footer";
 
-// ❗ Xato alert
+
 function ErrorAlert({ message, onClose }) {
   const [visible, setVisible] = useState(false);
 
