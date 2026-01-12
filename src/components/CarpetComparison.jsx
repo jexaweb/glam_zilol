@@ -70,7 +70,7 @@ export default function CarpetComparison() {
   };
 
   return (
-    <section className="relative mx-auto px-6 py-24 bg-gradient-to-br from-emerald-600 via-indigo-700 to-purple-700 rounded-3xl shadow-2xl overflow-hidden">
+    <section className="relative mx-auto px-6 py-24 from-emerald-600 via-indigo-700 to-purple-700 rounded-3xl shadow-2xl overflow-hidden">
       <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       
         <div className="lg:pr-12 text-white">

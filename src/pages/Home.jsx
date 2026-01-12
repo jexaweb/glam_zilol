@@ -5,6 +5,12 @@ import PhoneInput from "../components/PhoneInput";
 import { useLanguage } from "../components/LanguageContext";
 import EmailForm from "../components/EmailForm";
 import Footer from "../components/Footer";
+import CarpetServices from "../components/CarpetServices";
+import ServiceCard from "../components/ServiceCard";
+
+
+
+
 
 // fasez korsatadigan xato alert komponenti
 function ErrorAlert({ message, onClose }) {
@@ -181,6 +187,19 @@ function Home() {
     if (firstError) setCurrentError(firstError);
   }, [errors]);
 
+  const services = [
+    { title: "Gilam Yuvish", video:"gilam.mp4", link:"/gilam" },
+    { title: "Parda Yuvish", video:"parda.mp4", link:"/parda" },
+    { title: "Yakkandoz Yuvish", video:"yakkandoz.mp4", link:"/yakkandoz" },
+    { title: "Ko'rpa Yuvish", video:"korpa.mp4", link:"/korpa" },
+    { title: "Mebel Yuvish", video:"mebel.mp4", link:"/mebel" },
+    { title: "Matras Yuvish", video:"matras.mp4", link:"/matras" },
+    { title: "Kovrolin Tozalash", video:"kovrolin.mp4", link:"/kovrolin" },
+    { title: "Ofis Gilamlar", video:"ofis.mp4", link:"/ofis" },
+    { title: "Antiseptik Tozalash", video:"antiseptik.mp4", link:"/antiseptik" },
+    { title: "Avto Salon Yuvish", video:"avto.mp4", link:"/avto" },
+  ];
+
   return (
     <div key={key}>
       {/* Xato Alert */}
@@ -272,7 +291,7 @@ function Home() {
           text-[14px] sm:text-lg md:text-4xl lg:text-4xl
           leading-snug md:leading-normal
           px-3 py-3 sm:px-4 sm:py-4 md:px-5 md:py-6 
-          bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400
+         bg-yellow-500
           text-blue-800 
           rounded-xl md:rounded-2xl 
           backdrop-blur-md 
@@ -336,16 +355,52 @@ function Home() {
         ))}
       </section>
 
-      {/* Info Section */}
-      <section className="flex flex-col items-center justify-center  text-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-indigo-600 to-purple-600">
-          {currentT.name}
-        </h1>
+  <section className="py-20 px-4 bg-gradient-to-r from-yellow-200 via-green-200 to-blue-300">
+  <div className="max-w-6xl mx-auto text-center">
+    {/* Sarlavha */}
+    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+      ZILOL — Sizning ishonchli gilam yuvish xizmatingiz
+    </h2>
 
-        <p className="text-gray-600 max-w-2xl leading-relaxed mt-4 text-lg">
-          {currentT.gil}
-        </p>
-      </section>
+    <p className="mt-4 max-w-3xl mx-auto text-gray-700 text-lg md:text-xl">
+      Biz gilamlarni ekologik toza vositalar bilan chuqur tozalaymiz, quritamiz va tezkor yetkazib beramiz. Har bir mijozimiz biz uchun muhim!
+    </p>
+
+    {/* FACTS */}
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-14">
+      {/* Mamnun mijozlar */}
+      <div className="p-8 rounded-2xl shadow-lg bg-white/50 backdrop-blur-md hover:shadow-2xl transition transform hover:-translate-y-2">
+        <h3 className="text-5xl md:text-6xl font-bold text-green-600">
+          150 000+
+        </h3>
+        <p className="mt-2 text-gray-800 font-semibold">Mamnun mijozlar</p>
+      </div>
+
+      {/* Tajribali operatorlar */}
+      <div className="p-8 rounded-2xl shadow-lg bg-white/50 backdrop-blur-md hover:shadow-2xl transition transform hover:-translate-y-2">
+        <h3 className="text-5xl md:text-6xl font-bold text-yellow-500">
+          100+
+        </h3>
+        <p className="mt-2 text-gray-800 font-semibold">Tajribali operatorlar</p>
+      </div>
+
+      {/* Tajriba yili */}
+      <div className="p-8 rounded-2xl shadow-lg bg-white/50 backdrop-blur-md hover:shadow-2xl transition transform hover:-translate-y-2">
+        <h3 className="text-5xl md:text-6xl font-bold text-purple-600">
+          10 yilik
+        </h3>
+        <p className="mt-2 text-gray-800 font-semibold"> tajribasi</p>
+      </div>
+    </div>
+  </div>
+</section>
+<div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-700 ">
+      {services.map((s,i) => (
+        <ServiceCard key={i} title={s.title} video={s.video} link={s.link}/>
+      ))}
+    </div>
+
+
       <div>
         <CarpetComparison />
       </div>

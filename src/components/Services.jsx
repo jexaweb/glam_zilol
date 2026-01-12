@@ -78,7 +78,7 @@ function Services() {
           <AiFillInstagram />
         </a>
         <a
-          href="https://www.instagram.com/zilolgilam_yuvish/"
+          href="https://youtube.com/@zilolgilamyuvish-e4c?si=1M-D21xwplat6ya7"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-500 text-4xl border-[6px] border-white hover:border-amber-400 px-3 py-3 bg-white hover:bg-amber-400 rounded-full transition"

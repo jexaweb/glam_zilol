@@ -3,7 +3,7 @@ import Services from "../components/Services";
 
 function Footer() {
   return (
-    <footer className="w-full bg-gradient-to-br from-emerald-600 via-indigo-700 to-purple-700 text-white ">
+    <footer className="w-full bg-[linear-gradient(135deg,#059669,#4338ca,#7e22ce)] text-white ">
       <div className="max-w-1xl mx-auto px-5 grid grid-cols-1 md:grid-cols-2 gap-10   ">
         {/* Services bo'limi */}
         <div className="  ">
